@@ -12,7 +12,7 @@ st.set_page_config(
 
 # Load the potato disease classification model with error handling
 try:
-    potato_disease_model = tf.keras.models.load_model("7.keras")
+    potato_disease_model = tf.keras.models.load_model("1.keras")
     st.write("Model loaded successfully!")
 except Exception as e:
     st.error(f"Error loading model: {e}")
