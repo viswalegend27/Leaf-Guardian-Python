@@ -144,8 +144,6 @@ if uploaded_file and potato_disease_model:
                 else:
                     st.subheader("📋 Disease Details")
                     st.markdown(disease_info["description"])
-                    st.subheader("🛡️ Prevention Priority")
-                    st.markdown(disease_info["prevention"])
 
         except Exception as e:
             st.error(f"⚠️ Error processing image: {e}")
