@@ -1,8 +1,9 @@
-tensorflow==2.12.0
-streamlit==1.42.2
-numpy
+tensorflow
+python-multipart
 pillow
+tensorflow-serving-api
 matplotlib
-fastapi
-uvicorn
-google-generative-ai==0.4.0
+numpy
+streamlit
+streamlit
+google-generative-ai
