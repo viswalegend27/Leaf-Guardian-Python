@@ -1,3 +1,4 @@
+# Ignore sensitive config files
 .env
 credentials.toml
 secrets.toml
