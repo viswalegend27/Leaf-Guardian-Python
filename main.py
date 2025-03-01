@@ -6,78 +6,58 @@ import google.generativeai as genai
 import os
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+# Load environment variables
 load_dotenv()
 
 # Set page configuration
 st.set_page_config(page_title="Plant Disease Guardian", layout="wide", page_icon="🌿")
 
-# Local disease information as a fallback
+# Local Disease Information (Fallback)
 DISEASE_INFO = {
     'pepperbell_bacterial_spot': {
-        'description': "Bacterial spot in pepperbell plants is caused by Xanthomonas euvesicatoria, leading to dark, water-soaked lesions with yellowish halos.",
-        'prevention': "Use disease-free seeds, apply copper-based bactericides, and avoid overhead watering."
-    },
-    'pepper_bell_healthy': {
-        'description': "Your pepper bell plant is healthy and showing no signs of disease!",
-        'prevention': "Keep up consistent watering, spacing, and monitoring."
-    },
-    'potato_early_blight': {
-        'description': "Early blight in potato plants is caused by Alternaria solani, causing dark spots with concentric rings on leaves.",
-        'prevention': "Rotate crops, use fungicides like chlorothalonil, and remove infected debris."
-    },
-    'potato_late_blight': {
-        'description': "Late blight in potato plants is caused by Phytophthora infestans, leading to dark, water-soaked lesions and rapid crop loss.",
-        'prevention': "Use resistant varieties, apply fungicides like metalaxyl, and ensure good air circulation."
-    },
-    'potato_healthy': {
-        'description': "Your potato plant is healthy and showing no signs of disease!",
-        'prevention': "Keep up consistent watering, spacing, and monitoring."
-    },
-    'tomato_early_blight': {
-        'description': "Early blight in tomato plants is caused by Alternaria solani, causing dark spots with concentric rings on leaves.",
-        'prevention': "Rotate crops, use fungicides like mancozeb, and stake plants for better airflow."
+        'description': "Bacterial spot in pepperbell plants is caused by Xanthomonas euvesicatoria.",
+        'prevention': "Use disease-free seeds, apply copper-based bactericides."
     },
     'tomato_late_blight': {
-        'description': "Late blight in tomato plants is caused by Phytophthora infestans, leading to dark, water-soaked lesions and rapid fruit rot.",
-        'prevention': "Use resistant varieties, apply fungicides like chlorothalonil, and avoid overhead watering."
+        'description': "Late blight in tomato plants is caused by Phytophthora infestans.",
+        'prevention': "Use resistant varieties, apply fungicides like chlorothalonil."
     },
-    'tomato_healthy': {
-        'description': "Your tomato plant is healthy and showing no signs of disease!",
-        'prevention': "Keep up consistent watering, spacing, and monitoring."
+    'potato_healthy': {
+        'description': "Your potato plant is healthy!",
+        'prevention': "Keep up consistent watering and monitoring."
     }
 }
 
-# Configure Gemini API using environment variable
+# Configure Gemini API
 api_key = os.getenv("GEMINI_API_KEY")
 model = None
 if api_key:
-    genai.configure(api_key=api_key)
     try:
+        genai.configure(api_key=api_key)
         model = genai.GenerativeModel("gemini-1.5-pro-001")
-        st.write("✅ Using Gemini AI model for disease details.")
     except Exception as e:
-        st.warning(f"Error initializing Gemini model: {e}. Using local data.")
+        st.warning(f"Gemini AI error: {e}. Using local data.")
 
-# Load the TensorFlow model with error handling
-MODEL_PATH = "1.keras"
+# Load the TensorFlow model
+@st.cache_resource
+def load_model():
+    return tf.keras.models.load_model("1.keras")
+
+model_path = "1.keras"
 potato_disease_model = None
-if os.path.exists(MODEL_PATH):
-    try:
-        potato_disease_model = tf.keras.models.load_model(MODEL_PATH)
-        st.write("✅ Model loaded successfully!")
-    except Exception as e:
-        st.error(f"⚠️ Error loading model: {e}")
+if os.path.exists(model_path):
+    potato_disease_model = load_model()
+    st.write("✅ Model loaded successfully!")
 else:
-    st.error("⚠️ Model file not found! Ensure '1.keras' is in the project directory.")
+    st.error("⚠️ Model file not found!")
 
-# Class names from the model (ensure consistency)
+# Define class names
 CLASS_NAMES = [
     'pepperbell_bacterial_spot', 'pepper_bell_healthy', 'potato_early_blight', 
     'potato_late_blight', 'potato_healthy', 'tomato_early_blight', 'tomato_late_blight', 'tomato_healthy'
 ]
 
-# Function to extract disease name and check if healthy
+# Function to process class name
 def process_class_name(predicted_class):
     parts = predicted_class.split('_')
     plant = parts[0].lower()
@@ -86,69 +66,100 @@ def process_class_name(predicted_class):
     disease = condition if not is_healthy else None
     return plant, disease, is_healthy
 
-# Function to get disease info (Gemini AI or fallback to local data)
+# Function to get disease info from AI or local
 def get_disease_info(plant, disease):
     disease_key = f"{plant}_{disease}" if disease else f"{plant}_healthy"
-    
-    # Try Gemini API
+
     if model and disease:
-        prompt = f"Provide a concise description and prevention tips for {disease} in {plant} plants."
+        prompt = f"Provide a description, prevention, and treatment for {disease} in {plant} plants."
         try:
             response = model.generate_content(prompt)
             return {"description": response.text, "prevention": "Follow agricultural best practices."}
         except Exception as e:
-            st.warning(f"Error fetching info from Gemini API: {e}. Using local data.")
+            st.warning(f"Gemini AI error: {e}. Using local data.")
 
-    # Fallback to local data
     return DISEASE_INFO.get(disease_key, {
         "description": "No description available.",
         "prevention": "Consult an agricultural expert."
     })
 
-# Main app content
+# Main App Layout
 st.title('🌿 Plant Disease Guardian')
 
-# File uploader
-uploaded_file = st.file_uploader("Upload a leaf image...", type=["jpg", "jpeg", "png"])
+# Use Tabs for Better Organization
+tab1, tab2 = st.tabs(["🖼️ Upload & Predict", "ℹ️ About"])
 
-if uploaded_file and potato_disease_model:
-    with st.spinner("🔍 Processing image..."):
-        try:
-            # Process the image
-            img = Image.open(uploaded_file)
-            img = img.resize((256, 256), Image.Resampling.LANCZOS)
-            img_array = tf.keras.preprocessing.image.img_to_array(img)
-            img_array = tf.expand_dims(img_array, 0)
+with tab1:
+    # Image Upload
+    uploaded_file = st.file_uploader("Upload a leaf image...", type=["jpg", "jpeg", "png"])
 
-            # Predict
-            predictions = potato_disease_model.predict(img_array)
-            predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
-            confidence = np.max(predictions[0])
+    if uploaded_file and potato_disease_model:
+        with st.spinner("🔍 Processing image..."):
+            try:
+                # Progress Bar
+                progress_bar = st.progress(0)
 
-            # Extract details
-            plant, disease, is_healthy = process_class_name(predicted_class)
-            display_name = f"{plant.capitalize()} - {disease.replace('_', ' ').capitalize()}" if disease else f"{plant.capitalize()} - Healthy"
-            disease_info = get_disease_info(plant, disease)
+                # Process the image
+                img = Image.open(uploaded_file)
+                img = img.resize((256, 256), Image.Resampling.LANCZOS)
+                img_array = tf.keras.preprocessing.image.img_to_array(img)
+                img_array = tf.expand_dims(img_array, 0)
 
-            # Display results
-            col1, col2 = st.columns([1, 1])
-            with col1:
-                st.markdown(f"### 🌱 Prediction: **{display_name}**")
-                st.markdown(f"**Confidence:** `{confidence:.2f}`")
-                st.image(img, caption='📷 Uploaded Leaf Image', width=300)
+                # Predict
+                predictions = potato_disease_model.predict(img_array)
+                predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
+                confidence = np.max(predictions[0])
 
-            with col2:
-                if is_healthy:
-                    st.subheader("✅ Plant Health Status")
-                    st.markdown(disease_info["description"])
-                else:
-                    st.subheader("📋 Disease Details")
-                    st.markdown(disease_info["description"])
+                # Extract details
+                plant, disease, is_healthy = process_class_name(predicted_class)
+                display_name = f"{plant.capitalize()} - {disease.replace('_', ' ').capitalize()}" if disease else f"{plant.capitalize()} - Healthy"
+                disease_info = get_disease_info(plant, disease)
 
-        except Exception as e:
-            st.error(f"⚠️ Error processing image: {e}")
+                # Update progress bar
+                for percent in range(100):
+                    progress_bar.progress(percent + 1)
 
-# Custom CSS for better UI
+                # Show results
+                col1, col2 = st.columns([1, 1])
+                with col1:
+                    st.markdown(f"### 🌱 Prediction: **{display_name}**")
+                    st.markdown(f"**Confidence:** `{confidence:.2f}`")
+                    st.image(img, caption='📷 Uploaded Leaf Image', width=300)
+
+                with col2:
+                    if is_healthy:
+                        st.subheader("✅ Plant Health Status")
+                        st.markdown(disease_info["description"])
+                    else:
+                        st.subheader("📋 Disease Details")
+                        st.markdown(disease_info["description"])
+
+                # Show Alternative Prediction if Confidence is Low
+                if confidence < 0.7:
+                    alt_class = CLASS_NAMES[np.argsort(predictions[0])[-2]]
+                    st.warning(f"⚠️ Model is uncertain. Alternative prediction: **{alt_class.capitalize()}**")
+
+            except Exception as e:
+                st.error(f"⚠️ Error processing image: {e}")
+
+with tab2:
+    st.markdown("""
+        ## ℹ️ About This App
+        **Plant Disease Guardian** is an AI-powered tool for detecting plant diseases from leaf images.  
+        - 📷 **Upload a photo** using your device.  
+        - 🌿 **Get instant predictions** on plant diseases.  
+        - 🤖 **Uses AI (Gemini API)** for additional disease details and treatment solutions.  
+        - 🚀 **Optimized for speed** with TensorFlow & Streamlit.  
+
+        ### How It Works:
+        1. **User Uploads an Image** - The image of a plant leaf is uploaded.  
+        2. **Image Preprocessing** - The image is resized and converted into an array for model input.  
+        3. **Disease Classification** - The trained TensorFlow model predicts the disease.  
+        4. **AI-Powered Explanation** - The Gemini AI provides detailed disease information.  
+        5. **Results Displayed** - The app shows the diagnosis, confidence score, and treatment suggestions.  
+    """)
+
+# Custom CSS for Styling
 st.markdown("""
     <style>
     h1 { text-align: center; color: #2ecc71; }
