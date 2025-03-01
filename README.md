@@ -16,7 +16,7 @@
 
 ### 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/your-username/plant-disease-guardian.git
+git clone https://github.com/viswalegend27/plant-disease-guardian.git
 cd plant-disease-guardian
 ```
 
