@@ -29,14 +29,18 @@ DISEASE_INFO = {
 }
 
 # Configure Gemini API
-api_key = os.getenv("GEMINI_API_KEY")
-model = None
+api_key = os.getenv("GEMINI_API_KEY", st.secrets.get("GEMINI_API_KEY"))
+
 if api_key:
     try:
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel("gemini-1.5-pro-001")
     except Exception as e:
-        st.warning(f"Gemini AI error: {e}. Using local data.")
+        st.warning(f"⚠️ Gemini AI error: {e}. Using local data.")
+        model = None
+else:
+    st.warning("⚠️ No Gemini API Key found! Using local disease information.")
+    model = None
 
 # Load the TensorFlow model
 @st.cache_resource
@@ -47,9 +51,9 @@ model_path = "1.keras"
 potato_disease_model = None
 if os.path.exists(model_path):
     potato_disease_model = load_model()
-    st.write("✅ Model loaded successfully!")
+    st.success("✅ Model loaded successfully!")
 else:
-    st.error("⚠️ Model file not found!")
+    st.error("⚠️ Model file not found! Please upload a valid model.")
 
 # Define class names
 CLASS_NAMES = [
@@ -71,12 +75,12 @@ def get_disease_info(plant, disease):
     disease_key = f"{plant}_{disease}" if disease else f"{plant}_healthy"
 
     if model and disease:
-        prompt = f"Provide a description, prevention, and treatment for {disease} in {plant} plants."
+        prompt = f"Provide a description, symptoms, prevention, and treatment for {disease} in {plant} plants."
         try:
             response = model.generate_content(prompt)
             return {"description": response.text, "prevention": "Follow agricultural best practices."}
         except Exception as e:
-            st.warning(f"Gemini AI error: {e}. Using local data.")
+            st.warning(f"⚠️ Gemini AI error: {e}. Using local data.")
 
     return DISEASE_INFO.get(disease_key, {
         "description": "No description available.",
@@ -132,12 +136,13 @@ with tab1:
                         st.markdown(disease_info["description"])
                     else:
                         st.subheader("📋 Disease Details")
-                        st.markdown(disease_info["description"])
+                        st.markdown(f"**Description:** {disease_info['description']}")
+                        st.markdown(f"**Prevention:** {disease_info['prevention']}")
 
                 # Show Alternative Prediction if Confidence is Low
                 if confidence < 0.7:
                     alt_class = CLASS_NAMES[np.argsort(predictions[0])[-2]]
-                    st.warning(f"⚠️ Model is uncertain. Alternative prediction: **{alt_class.capitalize()}**")
+                    st.warning(f"⚠️ Model is uncertain. Alternative prediction: **{alt_class.replace('_', ' ').capitalize()}**")
 
             except Exception as e:
                 st.error(f"⚠️ Error processing image: {e}")

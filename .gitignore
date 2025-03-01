@@ -1,2 +1,4 @@
 .env
 credentials.toml
+secret.toml
+config.toml
