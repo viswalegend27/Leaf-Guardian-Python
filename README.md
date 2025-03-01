@@ -1,96 +1,91 @@
 # 🌿 Plant Disease Guardian
 
-**Plant Disease Guardian** is an AI-powered web application designed to detect plant diseases from leaf images using deep learning. Built with **TensorFlow**, **Streamlit**, and **Google's Gemini AI**, this tool provides instant predictions along with disease details, prevention tips, and treatment suggestions.
+## 🚀 Overview
+**Plant Disease Guardian** is an AI-powered tool for detecting plant diseases from leaf images. It uses a deep learning model trained with TensorFlow to classify diseases and integrates the Gemini AI API to provide detailed information about the detected diseases.
 
-## 🚀 Features
-- 📷 **Upload a Leaf Image**: Easily upload a plant leaf image for analysis.
-- 🌱 **AI-Powered Disease Detection**: Uses a deep learning model to classify plant diseases.
-- 🤖 **AI-Generated Disease Insights**: Fetches additional details using Google's Gemini AI.
-- 📊 **Confidence Score**: Displays model confidence in the prediction.
-- 📋 **Alternative Predictions**: Shows secondary predictions if confidence is low.
-- 🌍 **User-Friendly UI**: Simple and mobile-friendly interface powered by **Streamlit**.
+## 🎯 Features
+- 📷 **Upload Leaf Images** – Users can upload images of plant leaves.
+- 🌱 **AI-Powered Disease Detection** – A trained deep learning model classifies the disease.
+- 🤖 **Gemini AI Integration** – Provides detailed descriptions, symptoms, and treatments.
+- 📊 **Confidence Score Display** – Shows how confident the model is about its prediction.
+- ⚠️ **Alternative Prediction** – If confidence is low, an alternative result is displayed.
+- 🎨 **User-Friendly UI** – Built with Streamlit for an interactive experience.
 
 ---
 
-## 🛠️ Installation & Setup
-
+## 📦 Installation
 ### 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/viswalegend27/plant-disease-guardian.git
-cd plant-disease-guardian
+git clone https://github.com/viswalegend27/Leaf-Guardian-Python.git
+cd Leaf-Guardian-Python
 ```
 
 ### 2️⃣ Install Dependencies
-Make sure you have **Python 3.8+** installed, then install the required libraries:
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3️⃣ Set Up API Keys (Optional for AI-generated insights)
-Create a `.env` file in the project root and add your **Gemini API key**:
+### 3️⃣ Set Up API Keys (Optional for AI Integration)
+Create a `.env` file or use `.streamlit/secrets.toml` and add your Gemini API key:
 ```
 GEMINI_API_KEY=your_api_key_here
 ```
 
-### 4️⃣ Run the Application
+---
+
+## 🚀 Running the App
 ```bash
-streamlit run app.py
+streamlit run main.py
 ```
 
 ---
 
-## 📚 How It Works
-1. **User Uploads an Image** - A plant leaf image is uploaded to the application.
-2. **Image Preprocessing** - The image is resized and converted into an array for model input.
-3. **Disease Classification** - A trained TensorFlow model predicts the disease.
-4. **AI-Powered Explanation** - The Gemini AI provides additional disease details (if enabled).
-5. **Results Displayed** - The app shows the prediction, confidence score, and treatment suggestions.
+## 📷 Usage
+1️⃣ **Upload an image** of a plant leaf.
+2️⃣ **AI model processes the image** and predicts the disease.
+3️⃣ **Get instant results** with confidence scores.
+4️⃣ **Additional AI insights** (if Gemini API is configured).
 
 ---
 
-## 🏗️ Project Structure
+## 🏗️ Directory Structure
 ```
-📂 plant-disease-guardian
-│── 📄 app.py           # Main Streamlit application
-│── 📂 models           # Contains trained TensorFlow models
-│── 📂 assets           # Images and UI assets
-│── 📄 requirements.txt  # Dependencies list
-│── 📄 .env.example      # Example environment variables
-│── 📄 README.md         # Project documentation
+Leaf-Guardian-Python/
+│── .streamlit/
+│   ├── secrets.toml (optional for API keys)
+│── app.py
+│── main.py
+│── requirements.txt
+│── runtime.txt
+│── README.md
+│── 1.keras (Trained TensorFlow Model)
 ```
 
 ---
 
-## 📌 Supported Plant Diseases
-| **Plant** | **Disease** |
-|-----------|------------|
-| Tomato | Late Blight, Early Blight, Healthy |
-| Potato | Late Blight, Early Blight, Healthy |
-| Pepper Bell | Bacterial Spot, Healthy |
+## 🛠 Technologies Used
+- **Python** – Core programming language
+- **TensorFlow/Keras** – Deep learning model for classification
+- **Streamlit** – Web framework for interactive UI
+- **Google Gemini AI** – For enhanced disease information
+- **PIL (Pillow)** – Image processing
+- **dotenv** – For handling environment variables
+
+---
+
+## 📌 To-Do
+✅ Improve UI with real-time updates  
+✅ Optimize model performance  
+🔜 Add more plant disease categories  
+🔜 Deploy using Docker/Cloud services  
 
 ---
 
 ## 🏆 Contributing
-Feel free to contribute! Open an issue or submit a pull request if you find bugs, have feature requests, or want to improve the project.
-
-### To contribute:
-1. Fork the repository
-2. Create a new branch (`feature-xyz`)
-3. Commit your changes (`git commit -m "Added feature xyz"`)
-4. Push to your branch (`git push origin feature-xyz`)
-5. Create a Pull Request 🎉
+Feel free to contribute by submitting issues or pull requests! 😊
 
 ---
 
 ## 📜 License
-This project is open-source and available under the **MIT License**.
-
----
-
-## 💡 Acknowledgments
-- **TensorFlow** for deep learning model support
-- **Streamlit** for UI development
-- **Google Gemini AI** for AI-powered insights
-
-💚 Happy Farming! 🌱
+MIT License © 2025 viswalegend27
 
