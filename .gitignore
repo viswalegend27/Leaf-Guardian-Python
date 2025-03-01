@@ -1,5 +1,9 @@
-# Ignore sensitive config files
-.env
-credentials.toml
+# Ignore Streamlit secrets
 .streamlit/secrets.toml
+
+# Ignore environment variables
+.env
+
+# Ignore other sensitive files
 config.toml
+credentials.toml
