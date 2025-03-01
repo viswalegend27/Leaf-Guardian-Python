@@ -1,4 +1,3 @@
-tensorflow
 python-multipart
 pillow
 tensorflow-serving-api
@@ -6,4 +5,4 @@ matplotlib
 numpy
 streamlit
 streamlit
-google-generative-ai
+tensorflow>=2.16.0,<2.19.0
