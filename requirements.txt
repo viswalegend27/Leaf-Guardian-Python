@@ -6,3 +6,4 @@ numpy
 streamlit
 streamlit
 tensorflow>=2.16.0,<2.19.0
+google-generativeai
