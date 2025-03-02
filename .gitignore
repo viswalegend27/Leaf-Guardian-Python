@@ -7,3 +7,6 @@
 # Ignore other sensitive files
 config.toml
 credentials.toml
+
+# Ignore the text_document
+text_document.txt
