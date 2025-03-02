@@ -102,3 +102,12 @@ This project is open-source and available under the **MIT License**.
 💚 Happy Farming! 🌱  
 
 ---
+And also this whole project would only be a dream if not i did not follow anything in the field
+this playlist i have provide is my key to achieve success in my project.
+
+https://www.linkedin.com/in/dhavalsays/ --> Thank you sir ! ❤️❤️
+https://youtube.com/playlist?list=PLeo1K3hjS3ut49PskOfLnE6WUoOp_2lsD&si=lqOIkHbvMHcj_01m 
+
+Channel name : codebasics
+
+Do subscribe to this channel and share their work to others.
