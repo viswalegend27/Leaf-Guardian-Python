@@ -63,7 +63,7 @@ streamlit run app.py
 │── 📄 .env.example      # Provide your Gemini API Key here.
 │── 📄 README.md         # Project documentation
 │── 📂 .streamlit        # Streamlit folder
-        │── secrets.toml # You can provide you Gemini API Key here to. Must have create this folder to work with the code as it or else alter the main.py      
+        │── secrets.toml # You can provide you Gemini API Key here to. Must have create this folder to work with the code as it is or else alter the main.py      
 ```
 ---
 
