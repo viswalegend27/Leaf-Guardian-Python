@@ -1,4 +1,3 @@
-Certainly! Here's your **README.md** rewritten in the exact clean format you've requested, ready to copy and paste:
 
 ---
 
