@@ -1,5 +1,5 @@
 # Ignore secrets file
-#.streamlit/
+.streamlit/
 
 # Ignore environment variables
 .env
