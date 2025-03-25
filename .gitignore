@@ -10,3 +10,6 @@ credentials.toml
 
 # Ignore the text_document
 text_document.txt
+
+#ignore the pkl file
+gemini_cache.pkl
